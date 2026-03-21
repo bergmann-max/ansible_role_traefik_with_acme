@@ -3,11 +3,13 @@
 
 galaxy_info:
   author: Max Bergmann
+  namespace: bergmann_max
+  role_name: traefik_with_acme
   description: >
     Ansible role to deploy Traefik with Docker and automatic HTTPS using
-    Cloudflare DNS challenge – based on environment variables for API token.
+    Cloudflare DNS challenge.
   license: Unlicense
-  min_ansible_version: "2.11"
+  min_ansible_version: "2.10"
   platforms:
     - name: Ubuntu
       versions:

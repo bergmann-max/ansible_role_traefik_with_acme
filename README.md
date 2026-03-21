@@ -1,6 +1,6 @@
 # Ansible Role: ansible_role_traefik_with_acme
 
-[![Ansible](https://img.shields.io/badge/ansible-%3E%3D%202.11-EE0000?logo=ansible&logoColor=white)](https://www.ansible.com/)
+[![Ansible](https://img.shields.io/badge/ansible-%3E%3D%202.10-EE0000?logo=ansible&logoColor=white)](https://www.ansible.com/)
 [![Platform](https://img.shields.io/badge/platform-Ubuntu-E95420?logo=ubuntu&logoColor=white)](https://ubuntu.com/)
 [![Docker](https://img.shields.io/badge/docker-compose-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
 [![License](https://img.shields.io/badge/license-Unlicense-blue)](LICENSE)
@@ -19,7 +19,7 @@ This Ansible role deploys Traefik as a Docker Compose stack with automatic HTTPS
 
 ## Requirements & Supported Platforms
 
-- Ansible >= 2.11
+- Ansible >= 2.10
 - Ubuntu
 - Docker Engine installed on the target host
 - Docker Compose plugin available as `docker compose`
@@ -27,13 +27,13 @@ This Ansible role deploys Traefik as a Docker Compose stack with automatic HTTPS
 
 ## Role Variables
 
-The following variables can be set (see `defaults/main.yml` and `vars/main.yml`):
+The following variables can be set (see `defaults/main.yml`):
 
 | Variable | Default | Description |
 |---|---|---|
 | `ansible_role_traefik_with_acme_email` | `mail@example.com` | Email address used for ACME certificate registration |
-| `ansible_role_traefik_with_acme_traefik_user` | `traefik` | Linux system user that owns the deployment files and runs the systemd service |
-| `ansible_role_traefik_with_acme_traefik_group` | `docker` | Linux group for file ownership and Docker access |
+| `ansible_role_traefik_with_acme_traefik_user` | `""` | Linux system user that owns the deployment files and runs the systemd service |
+| `ansible_role_traefik_with_acme_traefik_group` | `""` | Linux group for file ownership and Docker access |
 | `ansible_role_traefik_with_acme_docker_release` | `latest` | Traefik image tag |
 | `ansible_role_traefik_with_acme_domain` | `example.com` | Base domain used for dashboard routing |
 | `ansible_role_traefik_with_acme_subdomain` | `traefik` | Subdomain for the dashboard, for example `traefik.example.com` |
@@ -45,6 +45,11 @@ The following variables can be set (see `defaults/main.yml` and `vars/main.yml`)
 
 The token is written to `cf_dns_api_token.secret` (mode `0400`) in the deployment directory and mounted into the Traefik container as a Docker Secret. Traefik reads it via the `CF_DNS_API_TOKEN_FILE` environment variable.
 
+## Important Notes
+
+- Set `ansible_role_traefik_with_acme_traefik_user` and `ansible_role_traefik_with_acme_traefik_group` explicitly before using the role
+- A valid Cloudflare API token must be provided via `ansible_role_traefik_with_acme_cf_token`
+
 ## Usage Example
 
 ```yaml
@@ -53,6 +58,8 @@ The token is written to `cf_dns_api_token.secret` (mode `0400`) in the deploymen
   become: true
   vars:
     ansible_role_traefik_with_acme_email: admin@example.com
+    ansible_role_traefik_with_acme_traefik_user: traefik
+    ansible_role_traefik_with_acme_traefik_group: docker
     ansible_role_traefik_with_acme_domain: example.com
     ansible_role_traefik_with_acme_subdomain: traefik
     ansible_role_traefik_with_acme_cf_token: "your-cloudflare-token"

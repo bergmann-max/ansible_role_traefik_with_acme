@@ -2,8 +2,9 @@
 # roles/ansible_role_traefik_with_acme/defaults/main.yml
 
 ansible_role_traefik_with_acme_email: "mail@example.com"
-ansible_role_traefik_with_acme_traefik_user: "traefik"
-ansible_role_traefik_with_acme_traefik_group: "docker"
+ansible_role_traefik_with_acme_traefik_user: ""
+ansible_role_traefik_with_acme_traefik_group: ""
+ansible_role_traefik_with_acme_docker_compose_dir: "/opt/traefik"
 ansible_role_traefik_with_acme_docker_release: "latest"
 ansible_role_traefik_with_acme_domain: "example.com"
 ansible_role_traefik_with_acme_subdomain: "traefik"
