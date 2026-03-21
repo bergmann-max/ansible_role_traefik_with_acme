@@ -24,7 +24,7 @@ api:
 certificatesResolvers:
   cloudflare:
     acme:
-      email: {{ ansible_role_traefik_with_cloudflare_email }}
+      email: {{ ansible_role_traefik_with_acme_email }}
       storage: /letsencrypt/acme.json
       dnsChallenge:
         provider: cloudflare

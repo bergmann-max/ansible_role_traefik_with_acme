@@ -1,7 +1,7 @@
 http:
   routers:
     traefik-dashboard:
-      rule: "Host(`{{ ansible_role_traefik_with_cloudflare_subdomain }}.{{ ansible_role_traefik_with_cloudflare_domain }}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))"
+      rule: "Host(`{{ ansible_role_traefik_with_acme_subdomain }}.{{ ansible_role_traefik_with_acme_domain }}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))"
       entryPoints:
         - websecure
       service: api@internal
@@ -11,7 +11,7 @@ http:
         certResolver: cloudflare
 
     traefik-root-redirect:
-      rule: "Host(`{{ ansible_role_traefik_with_cloudflare_subdomain }}.{{ ansible_role_traefik_with_cloudflare_domain }}`) && Path(`/`)"
+      rule: "Host(`{{ ansible_role_traefik_with_acme_subdomain }}.{{ ansible_role_traefik_with_acme_domain }}`) && Path(`/`)"
       entryPoints:
         - websecure
       service: noop@internal
@@ -32,6 +32,6 @@ http:
 
     redirect-to-dashboard:
       redirectRegex:
-        regex: "^https://{{ ansible_role_traefik_with_cloudflare_subdomain }}\\.{{ ansible_role_traefik_with_cloudflare_domain }}/$"
-        replacement: "https://{{ ansible_role_traefik_with_cloudflare_subdomain }}.{{ ansible_role_traefik_with_cloudflare_domain }}/dashboard/"
+        regex: "^https://{{ ansible_role_traefik_with_acme_subdomain }}\\.{{ ansible_role_traefik_with_acme_domain }}/$"
+        replacement: "https://{{ ansible_role_traefik_with_acme_subdomain }}.{{ ansible_role_traefik_with_acme_domain }}/dashboard/"
         permanent: true

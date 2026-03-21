@@ -1,18 +1,18 @@
 ---
-# roles/ansible_role_traefik_with_cloudflare/tasks/main.yml
+# roles/ansible_role_traefik_with_acme/tasks/main.yml
 
 - name: Traefik System User Setup
   tags: traefik_user_setup
   block:
     - name: Ensure traefik group exists
       ansible.builtin.group:
-        name: "{{ ansible_role_traefik_with_cloudflare_traefik_group }}"
+        name: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         system: true
 
     - name: Ensure traefik system user exists
       ansible.builtin.user:
-        name: "{{ ansible_role_traefik_with_cloudflare_traefik_user }}"
-        group: "{{ ansible_role_traefik_with_cloudflare_traefik_group }}"
+        name: "{{ ansible_role_traefik_with_acme_traefik_user }}"
+        group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         create_home: false
         shell: /sbin/nologin
         system: true
@@ -22,33 +22,33 @@
   block:
     - name: Ensure Traefik project directory exists
       ansible.builtin.file:
-        path: "{{ ansible_role_traefik_with_cloudflare_docker_compose_dir }}"
+        path: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}"
         state: directory
-        owner: "{{ ansible_role_traefik_with_cloudflare_traefik_user }}"
-        group: "{{ ansible_role_traefik_with_cloudflare_traefik_group }}"
+        owner: "{{ ansible_role_traefik_with_acme_traefik_user }}"
+        group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         mode: 'u=rwx,g=rx,o=rx'
 
     - name: Create config subdirectory
       ansible.builtin.file:
-        path: "{{ ansible_role_traefik_with_cloudflare_docker_compose_dir }}/config"
-        owner: "{{ ansible_role_traefik_with_cloudflare_traefik_user }}"
-        group: "{{ ansible_role_traefik_with_cloudflare_traefik_group }}"
+        path: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/config"
+        owner: "{{ ansible_role_traefik_with_acme_traefik_user }}"
+        group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         state: directory
         mode: 'u=rwx,g=rx,o=rx'
 
     - name: Ensure letsencrypt directory exists
       ansible.builtin.file:
-        path: "{{ ansible_role_traefik_with_cloudflare_docker_compose_dir }}/letsencrypt"
-        owner: "{{ ansible_role_traefik_with_cloudflare_traefik_user }}"
-        group: "{{ ansible_role_traefik_with_cloudflare_traefik_group }}"
+        path: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/letsencrypt"
+        owner: "{{ ansible_role_traefik_with_acme_traefik_user }}"
+        group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         state: directory
         mode: 'u=rwx,g=rx,o=rx'
 
     - name: Ensure ACME storage file exists
       ansible.builtin.file:
-        path: "{{ ansible_role_traefik_with_cloudflare_docker_compose_dir }}/letsencrypt/acme.json"
-        owner: "{{ ansible_role_traefik_with_cloudflare_traefik_user }}"
-        group: "{{ ansible_role_traefik_with_cloudflare_traefik_group }}"
+        path: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/letsencrypt/acme.json"
+        owner: "{{ ansible_role_traefik_with_acme_traefik_user }}"
+        group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         state: touch
         mode: 'u=rw,g=,o='
 
@@ -58,23 +58,23 @@
     - name: Template docker-compose file
       ansible.builtin.template:
         src: docker-compose.yml.j2
-        dest: "{{ ansible_role_traefik_with_cloudflare_docker_compose_dir }}/docker-compose.yml"
+        dest: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/docker-compose.yml"
         mode: 'u=rw,g=r,o=r'
 
     - name: Template traefik.yml config
       ansible.builtin.template:
         src: traefik.yml.j2
-        dest: "{{ ansible_role_traefik_with_cloudflare_docker_compose_dir }}/traefik.yml"
-        owner: "{{ ansible_role_traefik_with_cloudflare_traefik_user }}"
-        group: "{{ ansible_role_traefik_with_cloudflare_traefik_group }}"
+        dest: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/traefik.yml"
+        owner: "{{ ansible_role_traefik_with_acme_traefik_user }}"
+        group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         mode: 'u=rw,g=r,o=r'
 
     - name: Template dashboard.yml config
       ansible.builtin.template:
         src: dashboard.yml.j2
-        dest: "{{ ansible_role_traefik_with_cloudflare_docker_compose_dir }}/config/dashboard.yml"
-        owner: "{{ ansible_role_traefik_with_cloudflare_traefik_user }}"
-        group: "{{ ansible_role_traefik_with_cloudflare_traefik_group }}"
+        dest: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/config/dashboard.yml"
+        owner: "{{ ansible_role_traefik_with_acme_traefik_user }}"
+        group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         mode: 'u=rw,g=r,o=r'
 
 - name: Deploy Traefik stack via Docker Compose
@@ -82,31 +82,31 @@
   block:
     - name: Ensure Docker Compose project directory exists
       ansible.builtin.file:
-        path: "{{ ansible_role_traefik_with_cloudflare_docker_compose_dir }}"
-        owner: "{{ ansible_role_traefik_with_cloudflare_traefik_user }}"
-        group: "{{ ansible_role_traefik_with_cloudflare_traefik_group }}"
+        path: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}"
+        owner: "{{ ansible_role_traefik_with_acme_traefik_user }}"
+        group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         state: directory
         mode: 'u=rwx,g=rx,o=rx'
 
     - name: Deploy Docker Compose file
       ansible.builtin.template:
         src: "docker-compose.yml.j2"
-        dest: "{{ ansible_role_traefik_with_cloudflare_docker_compose_dir }}/docker-compose.yml"
-        owner: "{{ ansible_role_traefik_with_cloudflare_traefik_user }}"
-        group: "{{ ansible_role_traefik_with_cloudflare_traefik_group }}"
+        dest: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/docker-compose.yml"
+        owner: "{{ ansible_role_traefik_with_acme_traefik_user }}"
+        group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         mode: 'u=rw,g=r,o=-'
 
     - name: Check whether .env already exists
       ansible.builtin.stat:
-        path: "{{ ansible_role_traefik_with_cloudflare_docker_compose_dir }}/.env"
+        path: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/.env"
       register: env_file
 
     - name: Copy exaple.env if no .env exists
       ansible.builtin.copy:
         src: exaple.env
-        dest: "{{ ansible_role_traefik_with_cloudflare_docker_compose_dir }}/example.env"
-        owner: "{{ ansible_role_traefik_with_cloudflare_traefik_user }}"
-        group: "{{ ansible_role_traefik_with_cloudflare_traefik_group }}"
+        dest: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/example.env"
+        owner: "{{ ansible_role_traefik_with_acme_traefik_user }}"
+        group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         mode: 'u=rw,g=r,o=-'
       when: not env_file.stat.exists
 
