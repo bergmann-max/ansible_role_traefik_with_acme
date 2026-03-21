@@ -24,11 +24,7 @@ http:
     dashboard-auth:
       basicAuth:
         users:
-          # User: admin
-          # Password: admin
-          # IMPORTANT: Change the password before using in production!
-          # Generate with: htpasswd -nb admin 'your_secure_password'
-          - "admin:$apr1$UHxrmeEI$hlruVPrTv1hdsoGB1JVpX1"
+          - "{{ ansible_role_traefik_with_acme_dashboard_users }}"
 
     redirect-to-dashboard:
       redirectRegex:

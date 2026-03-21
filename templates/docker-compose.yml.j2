@@ -1,3 +1,7 @@
+secrets:
+  cf_dns_api_token:
+    file: ./cf_dns_api_token.secret
+
 services:
   traefik:
     image: traefik:{{ ansible_role_traefik_with_acme_docker_release }}
@@ -12,8 +16,10 @@ services:
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
       - ./config:/etc/traefik/config:ro
       - ./letsencrypt:/letsencrypt
-    env_file:
-      - .env
+    environment:
+      - CF_DNS_API_TOKEN_FILE=/run/secrets/cf_dns_api_token
+    secrets:
+      - cf_dns_api_token
     labels:
       - "traefik.enable=false"
     networks:

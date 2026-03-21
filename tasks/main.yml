@@ -96,19 +96,14 @@
         group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
         mode: 'u=rw,g=r,o=-'
 
-    - name: Check whether .env already exists
-      ansible.builtin.stat:
-        path: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/.env"
-      register: env_file
-
-    - name: Copy exaple.env if no .env exists
+    - name: Deploy Cloudflare API token as Docker secret file
       ansible.builtin.copy:
-        src: exaple.env
-        dest: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/example.env"
+        content: "{{ ansible_role_traefik_with_acme_cf_token }}"
+        dest: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/cf_dns_api_token.secret"
         owner: "{{ ansible_role_traefik_with_acme_traefik_user }}"
         group: "{{ ansible_role_traefik_with_acme_traefik_group }}"
-        mode: 'u=rw,g=r,o=-'
-      when: not env_file.stat.exists
+        mode: 'u=r,g=,o='
+      no_log: true
 
 - name: Traefik systemd Service Setup
   tags: traefik_service_setup

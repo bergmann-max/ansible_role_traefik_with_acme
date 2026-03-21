@@ -15,6 +15,7 @@ This Ansible role deploys Traefik as a Docker Compose stack with automatic HTTPS
 - Exposes the Traefik dashboard via HTTPS
 - Protects the dashboard with HTTP Basic Authentication
 - Installs a systemd unit for autostart and lifecycle management
+- Passes the Cloudflare API token securely via Docker Secret
 
 ## Requirements & Supported Platforms
 
@@ -22,7 +23,7 @@ This Ansible role deploys Traefik as a Docker Compose stack with automatic HTTPS
 - Ubuntu
 - Docker Engine installed on the target host
 - Docker Compose plugin available as `docker compose`
-- A valid Cloudflare API token provided in `.env`
+- A valid Cloudflare API token set via `ansible_role_traefik_with_acme_cf_token`
 
 ## Role Variables
 
@@ -37,6 +38,12 @@ The following variables can be set (see `defaults/main.yml` and `vars/main.yml`)
 | `ansible_role_traefik_with_acme_domain` | `example.com` | Base domain used for dashboard routing |
 | `ansible_role_traefik_with_acme_subdomain` | `traefik` | Subdomain for the dashboard, for example `traefik.example.com` |
 | `ansible_role_traefik_with_acme_docker_compose_dir` | `/opt/traefik` | Target directory for the Docker Compose project, configs, and ACME storage |
+| `ansible_role_traefik_with_acme_cf_token` | `""` | Cloudflare API token |
+| `ansible_role_traefik_with_acme_dashboard_users` | `""` | htpasswd string for dashboard Basic Auth — generate with `htpasswd -nb <user> <password>` |
+
+## Cloudflare Token
+
+The token is written to `cf_dns_api_token.secret` (mode `0400`) in the deployment directory and mounted into the Traefik container as a Docker Secret. Traefik reads it via the `CF_DNS_API_TOKEN_FILE` environment variable.
 
 ## Usage Example
 
@@ -48,23 +55,11 @@ The following variables can be set (see `defaults/main.yml` and `vars/main.yml`)
     ansible_role_traefik_with_acme_email: admin@example.com
     ansible_role_traefik_with_acme_domain: example.com
     ansible_role_traefik_with_acme_subdomain: traefik
+    ansible_role_traefik_with_acme_cf_token: "your-cloudflare-token"
+    ansible_role_traefik_with_acme_dashboard_users: "admin:$apr1$..."
   roles:
     - role: ansible_role_traefik_with_acme
 ```
-
-Before the first run, provide the Cloudflare token in the deployment directory:
-
-```bash
-cp /opt/traefik/example.env /opt/traefik/.env
-```
-
-Required variable in `.env`:
-
-```dotenv
-CF_DNS_API_TOKEN=your-cloudflare-token
-```
-
-When no `.env` exists yet, the role copies an `example.env` template into `{{ ansible_role_traefik_with_acme_docker_compose_dir }}`.
 
 ## Tags
 
@@ -73,13 +68,12 @@ When no `.env` exists yet, the role copies an `example.env` template into `{{ an
 | `traefik_user_setup` | Create the Traefik system user and group |
 | `traefik_prepare` | Create project directories and ACME storage |
 | `traefik_config` | Template Traefik configuration files |
-| `traefik_deploy` | Deploy Docker Compose files and environment template |
+| `traefik_deploy` | Deploy Docker Compose files and Cloudflare secret file |
 | `traefik_service_setup` | Install and enable the systemd service |
 
 ## Notes
 
 - The dashboard is exposed on `https://<subdomain>.<domain>/dashboard/`
-- The role currently templates a default Basic Auth user in `templates/dashboard.yml.j2`; change it before production use
 - The Traefik container publishes ports `80`, `443`, and `8080`
 
 ## License

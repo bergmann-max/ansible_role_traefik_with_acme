@@ -7,3 +7,8 @@ ansible_role_traefik_with_acme_traefik_group: "docker"
 ansible_role_traefik_with_acme_docker_release: "latest"
 ansible_role_traefik_with_acme_domain: "example.com"
 ansible_role_traefik_with_acme_subdomain: "traefik"
+ansible_role_traefik_with_acme_cf_token: ""
+
+# htpasswd string for the Traefik dashboard Basic Auth.
+# Generate with: htpasswd -nb <user> <password>
+ansible_role_traefik_with_acme_dashboard_users: ""
