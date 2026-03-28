@@ -33,7 +33,6 @@ The following variables can be set (see `defaults/main.yml`):
 |---|---|---|
 | `ansible_role_traefik_with_acme_email` | `mail@example.com` | Email address used for ACME certificate registration |
 | `ansible_role_traefik_with_acme_traefik_user` | `""` | Linux system user that owns the deployment files and runs the systemd service |
-| `ansible_role_traefik_with_acme_traefik_group` | `""` | Linux group for file ownership and Docker access |
 | `ansible_role_traefik_with_acme_docker_release` | `latest` | Traefik image tag |
 | `ansible_role_traefik_with_acme_domain` | `example.com` | Base domain used for dashboard routing |
 | `ansible_role_traefik_with_acme_subdomain` | `traefik` | Subdomain for the dashboard, for example `traefik.example.com` |
@@ -41,14 +40,15 @@ The following variables can be set (see `defaults/main.yml`):
 | `ansible_role_traefik_with_acme_cf_token` | `""` | Cloudflare API token |
 | `ansible_role_traefik_with_acme_dashboard_users` | `""` | htpasswd string for dashboard Basic Auth — generate with `htpasswd -nb <user> <password>` |
 
+The following variable is set in `vars/main.yml` and is not intended to be overridden:
+
+| Variable | Value | Description |
+|---|---|---|
+| `ansible_role_traefik_with_acme_docker_group` | `docker` | Linux group for file ownership and Docker access |
+
 ## Cloudflare Token
 
 The token is written to `cf_dns_api_token.secret` (mode `0400`) in the deployment directory and mounted into the Traefik container as a Docker Secret. Traefik reads it via the `CF_DNS_API_TOKEN_FILE` environment variable.
-
-## Important Notes
-
-- Set `ansible_role_traefik_with_acme_traefik_user` and `ansible_role_traefik_with_acme_traefik_group` explicitly before using the role
-- A valid Cloudflare API token must be provided via `ansible_role_traefik_with_acme_cf_token`
 
 ## Usage Example
 
@@ -59,7 +59,6 @@ The token is written to `cf_dns_api_token.secret` (mode `0400`) in the deploymen
   vars:
     ansible_role_traefik_with_acme_email: admin@example.com
     ansible_role_traefik_with_acme_traefik_user: traefik
-    ansible_role_traefik_with_acme_traefik_group: docker
     ansible_role_traefik_with_acme_domain: example.com
     ansible_role_traefik_with_acme_subdomain: traefik
     ansible_role_traefik_with_acme_cf_token: "your-cloudflare-token"
@@ -77,10 +76,12 @@ The token is written to `cf_dns_api_token.secret` (mode `0400`) in the deploymen
 | `traefik_config` | Template Traefik configuration files |
 | `traefik_deploy` | Deploy Docker Compose files and Cloudflare secret file |
 | `traefik_service_setup` | Install and enable the systemd service |
+| `traefik_start` | Start the Traefik stack via `docker compose up -d` |
 
 ## Notes
 
 - The dashboard is exposed on `https://<subdomain>.<domain>/dashboard/`
+- Visiting `https://<subdomain>.<domain>/` redirects automatically to `/dashboard/`
 - The Traefik container publishes ports `80`, `443`, and `8080`
 
 ## License

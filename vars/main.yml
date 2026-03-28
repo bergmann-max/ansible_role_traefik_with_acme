@@ -1,0 +1,4 @@
+---
+# roles/ansible_role_traefik_with_acme/vars/main.yml
+
+ansible_role_traefik_with_acme_docker_group: "docker"
