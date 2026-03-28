@@ -1,21 +1,6 @@
 ---
 # roles/ansible_role_traefik_with_acme/tasks/main.yml
 
-- name: Traefik System User Setup
-  tags: traefik_user_setup
-  block:
-    - name: Ensure docker group exists
-      ansible.builtin.group:
-        name: "{{ ansible_role_traefik_with_acme_docker_group }}"
-
-    - name: Ensure traefik system user exists
-      ansible.builtin.user:
-        name: "{{ ansible_role_traefik_with_acme_traefik_user }}"
-        group: "{{ ansible_role_traefik_with_acme_docker_group }}"
-        create_home: false
-        shell: /sbin/nologin
-        system: true
-
 - name: Prepare directories and credential files
   tags: traefik_prepare
   block:
