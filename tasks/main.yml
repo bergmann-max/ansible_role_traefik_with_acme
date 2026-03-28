@@ -109,3 +109,4 @@
   ansible.builtin.command:
     cmd: docker compose up -d
     chdir: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}"
+  changed_when: false
