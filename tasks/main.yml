@@ -35,16 +35,12 @@
         group: "{{ ansible_role_traefik_with_acme_docker_group }}"
         state: touch
         mode: 'u=rw,g=,o='
+        modification_time: preserve
+        access_time: preserve
 
 - name: Template Traefik configuration files
   tags: traefik_config
   block:
-    - name: Template docker-compose file
-      ansible.builtin.template:
-        src: docker-compose.yml.j2
-        dest: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/docker-compose.yml"
-        mode: 'u=rw,g=r,o=r'
-
     - name: Template traefik.yml config
       ansible.builtin.template:
         src: traefik.yml.j2
@@ -78,7 +74,7 @@
         dest: "{{ ansible_role_traefik_with_acme_docker_compose_dir }}/docker-compose.yml"
         owner: "{{ ansible_role_traefik_with_acme_traefik_user }}"
         group: "{{ ansible_role_traefik_with_acme_docker_group }}"
-        mode: 'u=rw,g=r,o=-'
+        mode: 'u=rw,g=r,o=r'
 
     - name: Deploy Cloudflare API token as Docker secret file
       ansible.builtin.copy:
