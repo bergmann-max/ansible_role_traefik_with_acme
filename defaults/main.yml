@@ -12,3 +12,10 @@ ansible_role_traefik_with_acme_cf_token: ""
 # htpasswd string for the Traefik dashboard Basic Auth.
 # Generate with: htpasswd -nb <user> <password>
 ansible_role_traefik_with_acme_dashboard_users: ""
+
+# Set to true to use Authentik as forward auth instead of basic auth.
+ansible_role_traefik_with_acme_use_authentik: false
+
+# URL of the Authentik forward auth endpoint.
+# Example: https://authentik.example.com/outpost.goauthentik.io/auth/traefik
+ansible_role_traefik_with_acme_authentik_url: ""
