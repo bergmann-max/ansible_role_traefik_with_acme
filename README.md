@@ -16,7 +16,6 @@ This Ansible role deploys Traefik as a Docker Compose stack with automatic HTTPS
 - Creates static and dynamic Traefik configuration files
 - Exposes the Traefik dashboard via HTTPS
 - Protects the dashboard with HTTP Basic Authentication or Authentik forward auth
-- Installs a systemd unit for autostart and lifecycle management
 - Passes the Cloudflare API token securely via Docker Secret
 
 ## Requirements & Supported Platforms
@@ -34,10 +33,9 @@ The following variables can be set (see `defaults/main.yml`):
 | Variable | Default | Description |
 |---|---|---|
 | `ansible_role_traefik_with_acme_email` | `mail@example.com` | Email address used for ACME certificate registration |
-| `ansible_role_traefik_with_acme_traefik_user` | `""` | Linux system user that owns the deployment files and runs the systemd service |
-| `ansible_role_traefik_with_acme_docker_release` | `latest` | Traefik image tag |
-| `ansible_role_traefik_with_acme_domain` | `example.com` | Base domain used for dashboard routing |
-| `ansible_role_traefik_with_acme_subdomain` | `traefik` | Subdomain for the dashboard, for example `traefik.example.com` |
+| `ansible_role_traefik_with_acme_traefik_user` | `""` | Linux system user that owns the deployment files |
+| `ansible_role_traefik_with_acme_docker_release` | `traefik:v3.6.12` | Traefik image tag |
+| `ansible_role_traefik_with_acme_fqdn` | `traefik.example.com` | Fully qualified domain name for the dashboard |
 | `ansible_role_traefik_with_acme_docker_compose_dir` | `/opt/traefik` | Target directory for the Docker Compose project, configs, and ACME storage |
 | `ansible_role_traefik_with_acme_cf_token` | `""` | Cloudflare API token |
 | `ansible_role_traefik_with_acme_dashboard_users` | `""` | htpasswd string for dashboard Basic Auth — generate with `htpasswd -nb <user> <password>` |
@@ -63,8 +61,7 @@ The token is written to `cf_dns_api_token.secret` (mode `0400`) in the deploymen
   vars:
     ansible_role_traefik_with_acme_email: admin@example.com
     ansible_role_traefik_with_acme_traefik_user: traefik
-    ansible_role_traefik_with_acme_domain: example.com
-    ansible_role_traefik_with_acme_subdomain: traefik
+    ansible_role_traefik_with_acme_fqdn: traefik.example.com
     ansible_role_traefik_with_acme_cf_token: "your-cloudflare-token"
     ansible_role_traefik_with_acme_dashboard_users: "admin:$apr1$..."
   roles:
@@ -129,8 +126,7 @@ Traefik calls the Authentik URL on every request to the dashboard. Both services
   vars:
     ansible_role_traefik_with_acme_email: admin@example.com
     ansible_role_traefik_with_acme_traefik_user: traefik
-    ansible_role_traefik_with_acme_domain: example.com
-    ansible_role_traefik_with_acme_subdomain: traefik
+    ansible_role_traefik_with_acme_fqdn: traefik.example.com
     ansible_role_traefik_with_acme_cf_token: "your-cloudflare-token"
     ansible_role_traefik_with_acme_use_authentik: true
     ansible_role_traefik_with_acme_authentik_url: "https://authentik.example.com/outpost.goauthentik.io/auth/traefik"
@@ -142,17 +138,15 @@ Traefik calls the Authentik URL on every request to the dashboard. Both services
 
 | Tag | Purpose |
 |---|---|
-| `traefik_user_setup` | Create the Traefik system user and group |
 | `traefik_prepare` | Create project directories and ACME storage |
 | `traefik_config` | Template Traefik configuration files |
 | `traefik_deploy` | Deploy Docker Compose files and Cloudflare secret file |
-| `traefik_service_setup` | Install and enable the systemd service |
 | `traefik_start` | Start the Traefik stack via `docker compose up -d` |
 
 ## Notes
 
-- The dashboard is exposed on `https://<subdomain>.<domain>/dashboard/`
-- Visiting `https://<subdomain>.<domain>/` redirects automatically to `/dashboard/`
+- The dashboard is exposed on `https://<fqdn>/dashboard/`
+- Visiting `https://<fqdn>/` redirects automatically to `/dashboard/`
 - The Traefik container publishes ports `80`, `443`, and `8080`
 
 ## License
@@ -161,4 +155,4 @@ Unlicense
 
 ## Author Information
 
-Role maintained by Max Bergmann.
+Max Bergmann.

@@ -4,7 +4,7 @@ secrets:
 
 services:
   traefik:
-    image: traefik:{{ ansible_role_traefik_with_acme_docker_release }}
+    image: {{ ansible_role_traefik_with_acme_docker_release }}
     container_name: traefik
     restart: always
     ports:
