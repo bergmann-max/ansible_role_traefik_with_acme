@@ -4,7 +4,7 @@
 ansible_role_traefik_with_acme_email: "mail@example.com"
 ansible_role_traefik_with_acme_traefik_user: ""
 ansible_role_traefik_with_acme_docker_compose_dir: "/opt/traefik"
-ansible_role_traefik_with_acme_docker_release: "traefik:v3.6.12"
+ansible_role_traefik_with_acme_docker_release: "traefik:v3.6.13"
 ansible_role_traefik_with_acme_fqdn: "traefik.example.com"
 ansible_role_traefik_with_acme_cf_token: ""
 
