@@ -1,4 +1,4 @@
-# Ansible Role: ansible_role_traefik_with_acme
+# Ansible Role: Traefik with ACME
 
 [![Ansible](https://img.shields.io/badge/ansible-%3E%3D%202.10-EE0000?logo=ansible&logoColor=white)](https://www.ansible.com/)
 [![Platform](https://img.shields.io/badge/platform-Ubuntu-E95420?logo=ubuntu&logoColor=white)](https://ubuntu.com/)
@@ -7,7 +7,7 @@
 [![Auth](https://img.shields.io/badge/auth-Authentik-FD4B2D?logo=authentik&logoColor=white)](https://goauthentik.io/)
 [![License](https://img.shields.io/badge/license-Unlicense-blue)](LICENSE)
 
-This Ansible role deploys Traefik as a Docker Compose stack with automatic HTTPS via ACME DNS challenge using **Cloudflare**. A systemd unit manages the stack lifecycle on the target host.
+This Ansible role deploys Traefik as a Docker Compose stack with automatic HTTPS via ACME DNS challenge using **Cloudflare**.
 
 ## Features
 
@@ -50,7 +50,7 @@ The following variable is set in `vars/main.yml` and is not intended to be overr
 
 ## Cloudflare Token
 
-The token is written to `cf_dns_api_token.secret` (mode `0400`) in the deployment directory and mounted into the Traefik container as a Docker Secret. Traefik reads it via the `CF_DNS_API_TOKEN_FILE` environment variable.
+The token is written to `cf_dns_api_token.secret` (mode `u=r,g=,o=`) in the deployment directory and mounted into the Traefik container as a Docker Secret. Traefik reads it via the `CF_DNS_API_TOKEN_FILE` environment variable.
 
 ## Usage Example
 
@@ -79,7 +79,7 @@ ansible_role_traefik_with_acme_use_authentik: true
 ansible_role_traefik_with_acme_authentik_url: "https://authentik.example.com/outpost.goauthentik.io/auth/traefik"
 ```
 
-When `use_authentik` is `true`, the `ansible_role_traefik_with_acme_dashboard_users` variable is ignored.
+When `ansible_role_traefik_with_acme_use_authentik` is `true`, the `ansible_role_traefik_with_acme_dashboard_users` variable is ignored.
 
 ### What to configure in Authentik
 
@@ -155,4 +155,4 @@ Unlicense
 
 ## Author Information
 
-Max Bergmann.
+Max Bergmann

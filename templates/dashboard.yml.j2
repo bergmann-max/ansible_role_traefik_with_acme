@@ -20,6 +20,16 @@ http:
       tls:
         certResolver: cloudflare
 
+{% if ansible_role_traefik_with_acme_use_authentik %}
+    traefik-authentik-outpost:
+      rule: "Host(`{{ ansible_role_traefik_with_acme_fqdn }}`) && PathPrefix(`/outpost.goauthentik.io/`)"
+      entryPoints:
+        - websecure
+      service: authentik-backend
+      tls:
+        certResolver: cloudflare
+{% endif %}
+
   middlewares:
 {% if ansible_role_traefik_with_acme_use_authentik %}
     dashboard-auth:
@@ -50,3 +60,12 @@ http:
         regex: "^https://{{ ansible_role_traefik_with_acme_fqdn }}/$"
         replacement: "https://{{ ansible_role_traefik_with_acme_fqdn }}/dashboard/"
         permanent: true
+
+{% if ansible_role_traefik_with_acme_use_authentik %}
+  services:
+    authentik-backend:
+      loadBalancer:
+        servers:
+          - url: "{{ ansible_role_traefik_with_acme_authentik_url | urlsplit('scheme') }}://{{ ansible_role_traefik_with_acme_authentik_url | urlsplit('hostname') }}"
+        passHostHeader: false
+{% endif %}
