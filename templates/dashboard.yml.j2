@@ -50,3 +50,6 @@ http:
         regex: "^https://{{ ansible_role_traefik_with_acme_fqdn }}/$"
         replacement: "https://{{ ansible_role_traefik_with_acme_fqdn }}/dashboard/"
         permanent: true
+    noauth:
+      chain:
+        middlewares: []
