@@ -1,7 +1,7 @@
 http:
   routers:
     traefik-dashboard:
-      rule: "Host(`{{ ansible_role_traefik_with_acme_fqdn }}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))"
+      rule: "Host(`{{ traefik_with_acme_fqdn }}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))"
       entryPoints:
         - websecure
       service: api@internal
@@ -11,7 +11,7 @@ http:
         certResolver: cloudflare
 
     traefik-root-redirect:
-      rule: "Host(`{{ ansible_role_traefik_with_acme_fqdn }}`) && Path(`/`)"
+      rule: "Host(`{{ traefik_with_acme_fqdn }}`) && Path(`/`)"
       entryPoints:
         - websecure
       service: noop@internal
@@ -20,9 +20,9 @@ http:
       tls:
         certResolver: cloudflare
 
-{% if ansible_role_traefik_with_acme_use_authentik %}
+{% if traefik_with_acme_use_authentik %}
     traefik-authentik-outpost:
-      rule: "Host(`{{ ansible_role_traefik_with_acme_fqdn }}`) && PathPrefix(`/outpost.goauthentik.io/`)"
+      rule: "Host(`{{ traefik_with_acme_fqdn }}`) && PathPrefix(`/outpost.goauthentik.io/`)"
       entryPoints:
         - websecure
       service: authentik-backend
@@ -31,10 +31,10 @@ http:
 {% endif %}
 
   middlewares:
-{% if ansible_role_traefik_with_acme_use_authentik %}
+{% if traefik_with_acme_use_authentik %}
     dashboard-auth:
       forwardAuth:
-        address: "{{ ansible_role_traefik_with_acme_authentik_url }}"
+        address: "{{ traefik_with_acme_authentik_url }}"
         trustForwardHeader: true
         authResponseHeaders:
           - X-authentik-username
@@ -52,20 +52,20 @@ http:
     dashboard-auth:
       basicAuth:
         users:
-          - "{{ ansible_role_traefik_with_acme_dashboard_users }}"
+          - "{{ traefik_with_acme_dashboard_users }}"
 {% endif %}
 
     redirect-to-dashboard:
       redirectRegex:
-        regex: "^https://{{ ansible_role_traefik_with_acme_fqdn }}/$"
-        replacement: "https://{{ ansible_role_traefik_with_acme_fqdn }}/dashboard/"
+        regex: "^https://{{ traefik_with_acme_fqdn }}/$"
+        replacement: "https://{{ traefik_with_acme_fqdn }}/dashboard/"
         permanent: true
 
-{% if ansible_role_traefik_with_acme_use_authentik %}
+{% if traefik_with_acme_use_authentik %}
   services:
     authentik-backend:
       loadBalancer:
         servers:
-          - url: "{{ ansible_role_traefik_with_acme_authentik_url | urlsplit('scheme') }}://{{ ansible_role_traefik_with_acme_authentik_url | urlsplit('hostname') }}"
+          - url: "{{ traefik_with_acme_authentik_url | urlsplit('scheme') }}://{{ traefik_with_acme_authentik_url | urlsplit('hostname') }}"
         passHostHeader: false
 {% endif %}

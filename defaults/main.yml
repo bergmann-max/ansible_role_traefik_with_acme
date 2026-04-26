@@ -1,20 +1,27 @@
 ---
 # roles/ansible_role_traefik_with_acme/defaults/main.yml
 
-ansible_role_traefik_with_acme_email: "mail@example.com"
-ansible_role_traefik_with_acme_traefik_user: ""
-ansible_role_traefik_with_acme_docker_compose_dir: "/opt/traefik"
-ansible_role_traefik_with_acme_docker_release: "traefik:latest"
-ansible_role_traefik_with_acme_fqdn: "traefik.example.com"
-ansible_role_traefik_with_acme_cf_token: ""
+traefik_with_acme_email: "mail@example.com"
+traefik_with_acme_traefik_user: ""
+traefik_with_acme_docker_group: "docker"
+traefik_with_acme_docker_compose_dir: "/opt/traefik"
+traefik_with_acme_docker_release: "traefik:latest"
+traefik_with_acme_fqdn: "traefik.example.com"
+
+# Cloudflare API token
+# Permissions:
+#   - Zone:DNS:Edit
+#   - Zone:Zone:Read
+# Zone Resources included select zone
+traefik_with_acme_cf_token: ""
 
 # htpasswd string for the Traefik dashboard Basic Auth.
 # Generate with: htpasswd -nb <user> <password>
-ansible_role_traefik_with_acme_dashboard_users: ""
+traefik_with_acme_dashboard_users: ""
 
 # Set to true to use Authentik as forward auth instead of basic auth.
-ansible_role_traefik_with_acme_use_authentik: false
+traefik_with_acme_use_authentik: false
 
 # URL of the Authentik forward auth endpoint.
 # Example: https://authentik.example.com/outpost.goauthentik.io/auth/traefik
-ansible_role_traefik_with_acme_authentik_url: ""
+traefik_with_acme_authentik_url: ""
