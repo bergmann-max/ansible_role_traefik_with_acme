@@ -53,30 +53,32 @@ The following variable is set in `vars/main.yml` and is not intended to be overr
 
 The token is written to `cf_dns_api_token.secret` (mode `u=r,g=,o=`) in the deployment directory and mounted into the Traefik container as a Docker Secret. Traefik reads it via the `CF_DNS_API_TOKEN_FILE` environment variable.
 
-## Usage
+## Install
+Add to your `requirements.yml`:
 
-1. **Install external roles and collections** (if any):
+```yaml
+roles:
+  - name: traefik_with_acme
+    src: git+ssh://git@github.com/bergmann-max/ansible_role_traefik_with_acme.git
+    version: main
+    scm: git
+```
 
-   ```bash
-   ansible-galaxy install -r requirements.yml
-   ```
+```bash
+$ ansible-galaxy install -r requirements.yml
+```
 
-2. **Run the playbook**:
+## Example Playbook
+```yaml
+- name: Apply template role
+  hosts: all
+  become: true
 
-   ```bash
-   ansible-playbook -i hosts.yml site.yml
-   ```
-
-   > 💡 Use `-K` to prompt for `sudo` password if required.
-
-## Configuration
-
-The project is controlled by `ansible.cfg`, which can define:
-
-- Inventory path (e.g., `hosts.yml`)
-- Roles path (e.g., `./roles`)
-- SSH settings (e.g., control persist, pipelining)
-- Vault password file (optional)
+  roles:
+    - role: template
+      vars:
+        example_var: "value"
+```
 
 ```yaml
 - name: Deploy Traefik with ACME via Cloudflare
